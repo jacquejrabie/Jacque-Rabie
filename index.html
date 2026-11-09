@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VWZ3PGZ58G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VWZ3PGZ58G');
+</script>
 <title>Jacque Rabie | Writer-Director, Los Angeles</title>
 <meta name="description" content="Jacque Rabie is a Los Angeles writer-director. Work includes the feature Orchid, the short doc Hyodo's Paradise (Big Sky), and Kur, a documentary about death filmed across cultures.">
 <meta name="author" content="Jacque Rabie">
@@ -263,6 +271,29 @@ html.tall .proj.wide img{aspect-ratio:2.4/1}
   }
   track.addEventListener('scroll',function(){requestAnimationFrame(update)},{passive:true});
   update();
+})();
+
+// analytics: log which link was clicked, e.g. "Orchid → Blu-ray" or "photography → nepal"
+(function(){
+  function clean(s){return (s||'').replace(/\s+/g,' ').trim()}
+  function describe(a){
+    var proj=a.closest('.proj');
+    if(proj){
+      var t=proj.querySelector('.cap a'), film=clean(t?t.textContent:proj.querySelector('.cap').firstChild.textContent);
+      var part=a.classList.contains('still')?'still':clean(a.textContent);
+      if(part===film)part='title';
+      return {section:'films',label:film+' → '+part};
+    }
+    var sec=a.closest('section'),head=sec&&sec.querySelector('p.g');
+    var name=head?clean(head.textContent):clean(a.textContent);
+    return {section:name,label:name===clean(a.textContent)?name:name+' → '+clean(a.textContent)};
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href]');
+    if(!a||typeof gtag!=='function')return;
+    var d=describe(a);
+    gtag('event','link_click',{link_label:d.label,link_section:d.section,link_url:a.href,transport_type:'beacon'});
+  },true);
 })();
 
 </script>
